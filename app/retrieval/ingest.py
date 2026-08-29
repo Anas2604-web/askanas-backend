@@ -100,37 +100,7 @@ def load_all_project_chunks(data_dir: str = "data/projects") -> list[ProjectChun
     return all_chunks
 
 
-def upsert_to_qdrant(chunks: list[ProjectChunk], collection_name: str = "askanas_projects"):
-    """Embed all chunks and upsert them into Qdrant as points with metadata payloads."""
-    client = QdrantClient(url="http://localhost:6333")
-
-    client.recreate_collection(
-        collection_name=collection_name,
-        vectors_config=VectorParams(size=384, distance=Distance.COSINE),
-    )
-
-    texts = [chunk.content for chunk in chunks]
-    vectors = embed_chunks(texts)
-
-    points = [
-        PointStruct(
-            id=i,
-            vector=vectors[i],
-            payload={
-                "content": chunk.content,
-                "project_title": chunk.project_title,
-                "section_title": chunk.section_title,
-                "source_file": chunk.source_file,
-            },
-        )
-        for i, chunk in enumerate(chunks)
-    ]
-
-    client.upsert(collection_name=collection_name, points=points)
-    print(f"Upserted {len(points)} chunks into '{collection_name}'.")
-
 
 if __name__ == "__main__":
     all_chunks = load_all_project_chunks()
     print(f"Loaded {len(all_chunks)} chunks from {len(set(c.project_title for c in all_chunks))} project docs.")
-    upsert_to_qdrant(all_chunks)
