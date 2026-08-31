@@ -4,6 +4,10 @@
 
 Jr. Consultant / Developer Intern at Hosho Digital, a consulting firm, June–July 2026 — delivered CRX Kit (enterprise CRM on Power Platform, later independently rebuilt pro-code) and an HR Analytics pipeline on Microsoft Fabric.
 
+## Note
+
+This is a summary of the Hosho Digital internship itself, not an individually-ranked project — see the CRX Kit and Fabric Pipelines docs for the ranked deliverables produced during this internship.
+
 ## Context
 
 Structured as a fixed-term, selection-phase internship with defined deliverables rather than an open-ended role — not a live paying-client engagement, but full ownership over schema design, workflow automation, and AI integration decisions, the way a real consulting deliverable would work.

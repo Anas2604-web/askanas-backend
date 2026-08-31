@@ -2,7 +2,7 @@ import os
 import glob
 from dataclasses import dataclass
 import re
-from ingest import ProjectChunk
+from app.retrieval.ingest import ProjectChunk, embed_chunks
 from fastembed import TextEmbedding
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
@@ -55,6 +55,24 @@ def upsert_to_qdrant(chunks: list[ProjectChunk], collection_name: str = "askanas
 
     client.upsert(collection_name=collection_name, points=points)
     print(f"Upserted {len(points)} chunks into '{collection_name}'.")
+
+def list_all_projects() -> list[dict]:
+    all_points, _ = client.scroll(
+        collection_name=COLLECTION_NAME,
+        limit=200,
+        with_payload=True,
+    )
+
+    seen = {}
+    for point in all_points:
+        title = point.payload["project_title"]
+        if title == "Internship":
+            continue
+        section = point.payload["section_title"]
+        if title not in seen or section == "One-line summary":
+            seen[title] = point.payload
+
+    return list(seen.values())
 
 if __name__ == "__main__":
     results = retrieve_projects("what is Anas's Teamwork Experience?")

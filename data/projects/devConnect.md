@@ -3,6 +3,9 @@
 ## One-line summary
 A full MERN-stack developer networking platform — think a Tinder-style swipe/match system for developers to connect — with real-time chat, subscription payments, and email notifications, deployed live with real users.
 
+## Project Ranking
+Rated 7/10 by Anas. A full MERN-stack social/networking app deployed live with real users, covering auth, matchmaking, real-time chat, and live Razorpay payments end-to-end. Good full-stack breadth demonstration, but the most "standard CRUD-plus" of his projects compared to his AI/agentic work.
+
 ## Problem / context
 Built as a full-stack learning and portfolio project to demonstrate end-to-end MERN capability: not just CRUD, but auth, matchmaking logic, payments, real-time messaging, and production email delivery — the full slice of what a real social/networking SaaS needs.
 

@@ -3,6 +3,9 @@
 ## One-line summary
 An enterprise CRM built two ways during a Hosho Digital internship: first as a low-code Power Platform app (Dataverse, Power Apps, Power Automate, AI Builder), then independently rebuilt pro-code as a full .NET Core 8 + React application with a Groq-powered AI assistant grounded in live CRM data.
 
+## Project Ranking
+Rated 6.5/10 by Anas. Delivered during the Hosho Digital internship — built first as a low-code Power Platform CRM, then independently rebuilt pro-code (.NET Core 8, EF Core, PostgreSQL, React) beyond the original assigned scope. Good example of initiative and working across both low-code and pro-code paradigms, though less technically deep than his top-tier projects.
+
 ## Problem / context
 A selection-phase project simulating a real consulting engagement: manage the customer lifecycle from first contact through to a closed deal, across contact management, sales pipeline, and marketing automation — first proving the design on low-code tooling, then independently proving the same logic could be delivered pro-code with a real relational backend.
 

@@ -3,6 +3,9 @@
 ## One-line summary
 A document Q&A platform where the AI doesn't just retrieve-and-answer — it acts as an agent that plans, retrieves, checks if what it found is actually good enough, and re-queries if not, citing exact source/chunk/passage every time. Built with teammate Arvinder Singh Dhoul as a major/final-year project.
 
+## Project Ranking
+Rated 8/10 by Anas. His primary final-year major project, built with teammate Arvinder Singh Dhoul under faculty guidance. Strong technical story around agentic retrieval loops and citation accuracy, and his main teamwork/collaboration STAR example — but not rated as high as RepoMind or UPI Offline Mesh in raw technical depth.
+
 ## Problem / context
 Standard RAG retrieves once and generates from whatever it finds, with no way to tell if the retrieved context was actually relevant — leading to vague, unverifiable "based on your document" answers. AgenticRAG treats retrieval as a decision the LLM makes and can revisit, not a fixed first step.
 

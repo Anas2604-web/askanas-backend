@@ -3,6 +3,9 @@
 ## One-line summary
 Two data engineering pipelines built on Microsoft Fabric using the Bronze-Silver-Gold Medallion architecture — one processing HR analytics data at Hosho Digital, one independently analyzing 7.7 million rows of real US traffic accident data (2016-2023) — both feeding star-schema Power BI dashboards.
 
+## Project Ranking
+Rated 7.5/10 by Anas. Strong real-world data engineering work — two independent Medallion-architecture pipelines, one on a genuine 7.7M-row dataset with a full star-schema Power BI dashboard. Best example of his data engineering skill specifically, distinct from his AI/agentic project work.
+
 ## Problem / context
 Raw operational data (HR records, traffic incident logs) isn't directly usable for analytics — it needs staged cleansing, transformation, and modeling before it can support reliable dashboards and decision-making. The Medallion architecture solves this by separating raw ingestion, cleansing, and business-ready modeling into distinct layers rather than doing it all in one messy transformation step.
 

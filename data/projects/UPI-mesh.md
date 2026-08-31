@@ -3,6 +3,9 @@
 ## One-line summary
 A Spring Boot backend demonstrating offline UPI-style payments: a payment is encrypted on a sender's phone, hops device-to-device through a Bluetooth-style mesh with zero connectivity, and settles exactly once when any device in the mesh reaches the internet.
 
+## Project Ranking
+Rated 9/10 by Anas — tied for his strongest project and his strongest raw engineering work. Showcases hybrid RSA+AES-GCM cryptography, atomic idempotency under concurrency, and a fully concurrency-tested settlement pipeline. Should be highlighted when asked about his best backend/systems engineering but prefer RepoMind first.
+
 ## Problem / context
 UPI requires connectivity. This explores "mesh-routed deferred settlement" — can a payment be composed offline, physically carried through untrusted intermediary devices, and settle correctly and exactly once whenever any device in the chain reconnects — without any intermediary being able to read or tamper with it.
 

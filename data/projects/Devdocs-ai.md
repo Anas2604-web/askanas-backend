@@ -3,6 +3,9 @@
 ## One-line summary
 A multi-tenant B2B RAG SaaS that lets companies upload their internal docs and get accurate, hallucination-filtered answers via a chat interface — currently built in Java/Spring Boot (not yet ported to the FastAPI/Python stack used elsewhere).
 
+## Project Ranking
+Rated 8/10 by Anas. A solid multi-tenant B2B RAG SaaS with real production concerns (4-layer tenant isolation, confidence-threshold filtering, Redis caching cutting LLM cost ~65%). Currently still on the Java/Spring Boot stack, with a Python/FastAPI port planned but not yet complete — worth noting if asked about current stack limitations.
+
 ## Problem / context
 Companies need a way to make internal documentation searchable and queryable without engineering teams building custom RAG infra from scratch. DevDocs AI packages that as a multi-tenant SaaS — multiple customer orgs share the same deployment but stay fully data-isolated.
 

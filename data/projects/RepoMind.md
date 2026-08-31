@@ -3,6 +3,9 @@
 ## One-line summary
 An agentic RAG platform that lets developers paste any GitHub repo URL and ask natural-language questions, answered with exact file + line citations.
 
+## Project Ranking
+Anas rates this project 9/10 — his strongest and most technically complete project, showcasing full-stack agentic RAG with real citations, streaming, and auth. Should be highlighted first when asked about his best or flagship work.
+
 ## Problem / context
 Contributing to unfamiliar open-source codebases is slow — a 200-file repo with no explanation means hours of manual reading before you can make a useful change. RepoMind clones the repo, indexes it, and lets you ask questions directly instead.
 
