@@ -80,21 +80,27 @@ Rules:
 - If retrieved content doesn't fully answer the question, say so honestly rather than filling gaps with generic-sounding claims.
 - For questions asking to list, enumerate, or give an overview of all Anas's projects, use the list_projects tool instead of project_retrieval, since it guarantees complete coverage of every project rather than similarity-ranked results.
 - When listing projects, merge multiple retrieved chunks about the same project into a single entry rather than listing it more than once.
+- End most answers with a short, natural follow-up offer relevant to what was just discussed (e.g. "Want me to go deeper on the architecture?" or "Curious about a specific technical decision?") — this keeps the conversation moving, similar to how a real conversation would flow. Skip this only for very short factual answers where it would feel repetitive.
 """
 
 agent = create_react_agent(llm, tools=tools, prompt=SYSTEM_PROMPT)
 
 
-def ask_agent(question: str) -> str:
+def ask_agent(question: str, history: list[dict] | None = None) -> str:
     """
-    Single entrypoint for the AskAnas agent. Takes a raw user question,
-    runs it through the LangGraph ReAct agent, returns the final text answer.
-    This is what the FastAPI /chat route will import and call.
+    Single entrypoint for the AskAnas agent. Takes a raw user question and
+    optional conversation history, runs it through the LangGraph ReAct agent,
+    returns the final text answer.
     """
-    response = agent.invoke({
-        "messages": [("user", question)]
-    })
+    messages = []
+    if history:
+        for turn in history:
+            messages.append((turn["role"], turn["content"]))
+    messages.append(("user", question))
+
+    response = agent.invoke({"messages": messages})
     return response["messages"][-1].content
+
 
 
 if __name__ == "__main__":

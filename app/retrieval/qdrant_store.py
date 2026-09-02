@@ -8,7 +8,10 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
 
 COLLECTION_NAME= "askanas_projects"
-client = QdrantClient(url="http://localhost:6333")
+client = QdrantClient(
+    url=os.getenv("QDRANT_URL", "http://localhost:6333"),
+    api_key=os.getenv("QDRANT_API_KEY", None),
+)
 model=TextEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 def retrieve_projects(query: str, top_k: int =5):
