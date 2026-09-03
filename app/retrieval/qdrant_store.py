@@ -2,6 +2,8 @@ import os
 import glob
 from dataclasses import dataclass
 import re
+from dotenv import load_dotenv
+load_dotenv()
 from app.retrieval.ingest import ProjectChunk, embed_chunks
 from fastembed import TextEmbedding
 from qdrant_client import QdrantClient
@@ -11,6 +13,7 @@ COLLECTION_NAME= "askanas_projects"
 client = QdrantClient(
     url=os.getenv("QDRANT_URL", "http://localhost:6333"),
     api_key=os.getenv("QDRANT_API_KEY", None),
+    timeout=60,
 )
 model=TextEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
@@ -31,8 +34,8 @@ def retrieve_projects(query: str, top_k: int =5):
 ]
 
 
-def upsert_to_qdrant(chunks: list[ProjectChunk], collection_name: str = "askanas_projects"):
-    """Embed all chunks and upsert them into Qdrant as points with metadata payloads."""
+def upsert_to_qdrant(chunks: list[ProjectChunk], collection_name: str = "askanas_projects", batch_size: int = 20):
+    """Embed all chunks and upsert them into Qdrant as points with metadata payloads, in batches."""
 
     client.recreate_collection(
         collection_name=collection_name,
@@ -56,7 +59,11 @@ def upsert_to_qdrant(chunks: list[ProjectChunk], collection_name: str = "askanas
         for i, chunk in enumerate(chunks)
     ]
 
-    client.upsert(collection_name=collection_name, points=points)
+    for i in range(0, len(points), batch_size):
+        batch = points[i:i + batch_size]
+        client.upsert(collection_name=collection_name, points=batch)
+        print(f"  Upserted batch {i // batch_size + 1} ({len(batch)} points)")
+
     print(f"Upserted {len(points)} chunks into '{collection_name}'.")
 
 def list_all_projects() -> list[dict]:

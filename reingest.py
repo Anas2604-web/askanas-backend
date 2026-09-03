@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from app.retrieval.ingest import load_all_project_chunks
 from app.retrieval.qdrant_store import upsert_to_qdrant
 
