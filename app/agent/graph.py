@@ -101,7 +101,20 @@ def ask_agent(question: str, history: list[dict] | None = None) -> str:
     response = agent.invoke({"messages": messages})
     return response["messages"][-1].content
 
+def stream_agent(question: str, history: list[dict] | None = None):
+    """Yields text chunks as the agent generates its response."""
+    messages = []
+    if history:
+        for turn in history:
+            messages.append((turn["role"], turn["content"]))
+    messages.append(("user", question))
 
+    for msg_chunk, metadata in agent.stream(
+            {"messages": messages},
+            stream_mode="messages",
+    ):
+        if metadata.get("langgraph_node") == "agent" and msg_chunk.content:
+            yield msg_chunk.content
 
 if __name__ == "__main__":
     import sys

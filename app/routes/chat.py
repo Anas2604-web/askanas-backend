@@ -1,7 +1,8 @@
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from app.agent.graph import ask_agent
+from app.agent.graph import ask_agent, stream_agent
 from app.retrieval.qdrant_store import list_all_projects
 import json
 import os
@@ -75,6 +76,40 @@ def chat(req: ChatRequest):
         error = True
     log_interaction(req.question, answer, req.history, error=error)
     return ChatResponse(answer=answer)
+
+def sse_format(data: str) -> str:
+    return f"data: {json.dumps({'chunk': data})}\n\n"
+
+@app.post("/chat/stream")
+def chat_stream(req: ChatRequest):
+    if is_list_query(req.question):
+        results = list_all_projects()
+        answer = format_project_list(results)
+        log_interaction(req.question, answer, req.history)
+
+        def single_chunk():
+            yield sse_format(answer)
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(single_chunk(), media_type="text/event-stream")
+
+    def event_generator():
+        full_answer = ""
+        error = False
+        try:
+            for chunk in stream_agent(req.question, req.history):
+                full_answer += chunk
+                yield sse_format(chunk)
+        except Exception as e:
+            print(f"[chat_stream] agent error: {e}")
+            error_msg = "Sorry, something went wrong on my end — try again in a moment."
+            full_answer = error_msg
+            error = True
+            yield sse_format(error_msg)
+        finally:
+            log_interaction(req.question, full_answer, req.history, error=error)
+            yield "data: [DONE]\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 @app.get("/metrics")
 def metrics():
