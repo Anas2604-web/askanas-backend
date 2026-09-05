@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from app.agent.graph import ask_agent, stream_agent
 from app.retrieval.qdrant_store import list_all_projects
+from app.guardrails.llm_judge import judge_input, judge_output
 import json
 import os
 from collections import Counter
@@ -50,13 +51,14 @@ def format_project_list(results: list[dict]) -> str:
 
 LOG_FILE = "chat_logs.jsonl"
 
-def log_interaction(question: str, answer: str, history: list[dict] | None, error: bool = False):
+def log_interaction(question: str, answer: str, history: list[dict] | None, error: bool = False, blocked: bool = False):
     entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "question": question,
         "answer": answer,
         "history_length": len(history) if history else 0,
         "error": error,
+        "blocked": blocked,
     }
     try:
         with open(LOG_FILE, "a", encoding="utf-8") as f:
@@ -85,6 +87,17 @@ def sse_format(data: str) -> str:
 
 @app.post("/chat/stream")
 def chat_stream(req: ChatRequest):
+    # --- input guardrail ---
+    input_verdict = judge_input(req.question)
+    if not input_verdict.get("safe", True):
+        rejection = "I can only answer questions about Anas's projects, skills, and career background."
+        log_interaction(req.question, rejection, req.history, blocked=True)
+
+        def rejection_chunk():
+            yield sse_format(rejection)
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(rejection_chunk(), media_type="text/event-stream")
+
     if is_list_query(req.question):
         results = list_all_projects()
         answer = format_project_list(results)
@@ -102,6 +115,12 @@ def chat_stream(req: ChatRequest):
             for chunk in stream_agent(req.question, req.history):
                 full_answer += chunk
                 yield sse_format(chunk)
+
+            # --- output guardrail (post-hoc check, logged not blocked mid-stream) ---
+            output_verdict = judge_output(req.question, full_answer)
+            if not output_verdict.get("safe", True):
+                print(f"[guardrail] output flagged: {output_verdict.get('reason')}")
+
         except Exception as e:
             print(f"[chat_stream] agent error: {e}")
             error_msg = "Sorry, something went wrong on my end — try again in a moment."
@@ -132,6 +151,7 @@ def metrics():
 
     total = len(entries)
     errors = sum(1 for e in entries if e.get("error"))
+    blocked = sum(1 for e in entries if e.get("blocked"))
     avg_answer_len = sum(len(e["answer"]) for e in entries) / total
     avg_history_len = sum(e.get("history_length", 0) for e in entries) / total
     question_counts = Counter(e["question"].strip().lower() for e in entries)
@@ -142,6 +162,7 @@ def metrics():
         "total_questions": total,
         "error_count": errors,
         "error_rate": round(errors / total, 3),
+        "blocked_count": blocked,
         "avg_answer_length_chars": round(avg_answer_len, 1),
         "avg_history_length": round(avg_history_len, 1),
         "list_query_count": list_query_count,

@@ -81,6 +81,7 @@ Rules:
 - For questions asking to list, enumerate, or give an overview of all Anas's projects, use the list_projects tool instead of project_retrieval, since it guarantees complete coverage of every project rather than similarity-ranked results.
 - When listing projects, merge multiple retrieved chunks about the same project into a single entry rather than listing it more than once.
 - End most answers with a short, natural follow-up offer relevant to what was just discussed (e.g. "Want me to go deeper on the architecture?" or "Curious about a specific technical decision?") — this keeps the conversation moving, similar to how a real conversation would flow. Skip this only for very short factual answers where it would feel repetitive.
+- Never share personal contact information (email, phone) unless the user is specifically asking how to reach Anas for hiring/collaboration purposes — and only what's in the Contact & Links document. Never speculate about or reveal any personal information not explicitly present in the project documentation.
 """
 
 agent = create_react_agent(llm, tools=tools, prompt=SYSTEM_PROMPT)
