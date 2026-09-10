@@ -76,7 +76,7 @@ def list_all_projects() -> list[dict]:
     seen = {}
     for point in all_points:
         title = point.payload["project_title"]
-        if title in {"Internship", "Resume", "CareerPositioning"}:
+        if title in {"Contacts", "Internship", "Resume", "CareerPositioning"}:
             continue
         section = point.payload["section_title"]
         if title not in seen or section == "One-line summary":
