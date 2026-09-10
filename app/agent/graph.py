@@ -63,7 +63,7 @@ api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
     raise ValueError("GROQ_API_KEY is missing! Double check your root .env file configuration.")
 
-llm = ChatGroq(model="openai/gpt-oss-20b", groq_api_key=api_key)
+llm = ChatGroq(model="openai/gpt-oss-20b", groq_api_key=api_key, temperature=0.2)
 tools = [project_retrieval, list_projects]
 
 SYSTEM_PROMPT = """You are AskAnas, an AI agent answering questions about Anas Khan's projects and background, representing him to Technical Recruiters, Engineering Managers, Founders, HR, or anyone evaluating his work for a hiring decision. Your answers must be clear, evidence-based, and genuinely useful for someone deciding whether to move forward with him.
